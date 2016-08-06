@@ -212,6 +212,17 @@ public class AutoInstallsLayout {
         mValues.put(Favorites.CELLX, getAttributeValue(parser, ATTR_X));
         mValues.put(Favorites.CELLY, getAttributeValue(parser, ATTR_Y));
 
+        final String mPackageName = getAttributeValue(parser, ATTR_PACKAGE_NAME);
+        final String mClassName = getAttributeValue(parser, ATTR_CLASS_NAME);
+        final long mContainer = mTemp[0];
+        final String mScreen = mTemp[1]+"";
+        final String mX = getAttributeValue(parser, ATTR_X);
+        final String mY = getAttributeValue(parser, ATTR_Y);
+        if(mPackageName == null || mClassName == null) {
+        } else {
+            LauncherAppState.getInstance().favorites.add(new Favorite(mPackageName, mClassName, mContainer, mScreen, mX, mY));
+        }
+
         TagParser tagParser = tagParserMap.get(parser.getName());
         if (tagParser == null) {
             if (LOGD) Log.d(TAG, "Ignoring unknown element tag: " + parser.getName());

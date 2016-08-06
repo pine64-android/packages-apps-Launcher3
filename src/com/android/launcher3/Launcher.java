@@ -3224,7 +3224,7 @@ public class Launcher extends Activity
 
     private void setWorkspaceBackground(boolean workspace) {
         mLauncherView.setBackground(workspace ?
-                mWorkspaceBackgroundDrawable : null);
+                null:mWorkspaceBackgroundDrawable);
     }
 
     protected void changeWallpaperVisiblity(boolean visible) {
@@ -3397,11 +3397,11 @@ public class Launcher extends Activity
                 yDrift = 2 * height / 3;
                 xDrift = 0;
             }
-            final float initAlpha = alpha;
+            final float initAlpha = alpha = 0f;
 
             revealView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
             layerViews.add(revealView);
-            PropertyValuesHolder panelAlpha = PropertyValuesHolder.ofFloat("alpha", initAlpha, 1f);
+            PropertyValuesHolder panelAlpha = PropertyValuesHolder.ofFloat("alpha", initAlpha, 0f);
             PropertyValuesHolder panelDriftY =
                     PropertyValuesHolder.ofFloat("translationY", yDrift, 0);
             PropertyValuesHolder panelDriftX =
@@ -3478,7 +3478,7 @@ public class Launcher extends Activity
                     if (page != null) {
                         page.setLayerType(View.LAYER_TYPE_NONE, null);
                     }
-                    content.setPageBackgroundsVisible(true);
+                    content.setPageBackgroundsVisible(false);
 
                     // Hide the search bar
                     if (mSearchDropTargetBar != null) {
@@ -3628,6 +3628,7 @@ public class Launcher extends Activity
 
                 // Hide the real page background, and swap in the fake one
                 revealView.setVisibility(View.VISIBLE);
+                revealView.setAlpha(0f);
                 content.setPageBackgroundsVisible(false);
 
                 final View allAppsButton = getAllAppsButton();
@@ -3751,7 +3752,7 @@ public class Launcher extends Activity
                     if (page != null) {
                         page.setLayerType(View.LAYER_TYPE_NONE, null);
                     }
-                    content.setPageBackgroundsVisible(true);
+                    content.setPageBackgroundsVisible(false);
                     // Unhide side pages
                     int count = content.getChildCount();
                     for (int i = 0; i < count; i++) {

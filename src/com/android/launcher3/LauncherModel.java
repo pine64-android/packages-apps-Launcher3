@@ -30,6 +30,7 @@ import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.pm.LauncherApps.Callback;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
@@ -39,6 +40,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
@@ -1236,6 +1238,31 @@ public class LauncherModel extends BroadcastReceiver
         int op = PackageUpdatedTask.OP_ADD;
         enqueuePackageUpdated(new PackageUpdatedTask(op, new String[] { packageName },
                 user));
+        for(int in = 0 ;in < LauncherAppState.getInstance().favorites.size(); in++) {
+            if(LauncherAppState.getInstance().favorites.get(in).getClassName().equals(packageName)) {
+                try {
+                    Favorite f = LauncherAppState.getInstance().favorites.get(in);
+                    Context context = LauncherAppState.getInstance().getContext();
+                    final ShortcutInfo info = new ShortcutInfo();
+                    info.cellX = Integer.parseInt(f.getX());
+                    info.cellY = Integer.parseInt(f.getY());
+                    info.container = f.getContainer();
+                    info.screenId = Long.parseLong(f.getScreen());
+                    info.user = UserHandleCompat.myUserHandle();
+                    final ComponentName cn = new ComponentName(f.getClassName(), f.getPackageName());
+                    info.intent = new Intent(Intent.ACTION_MAIN).setComponent(cn).addCategory(Intent.CATEGORY_LAUNCHER);
+                    ActivityInfo aInfo = context.getPackageManager().getActivityInfo(cn, 0);
+                    info.title = aInfo.loadLabel(context.getPackageManager()).toString();
+					Drawable icon = context.getPackageManager().getApplicationIcon(aInfo.applicationInfo);
+					info.setIcon(Utilities.createIconBitmap(icon, context));
+                    addItemToDatabase(context, info, f.getContainer(), info.screenId, info.cellX, info.cellY, false);
+                    LauncherAppState.getInstance().favorites.remove(in);
+                    startLoaderFromBackground();
+                } catch (PackageManager.NameNotFoundException e) {
+                }
+                break;
+            }
+        }
     }
 
     @Override
@@ -2119,6 +2146,12 @@ public class LauncherModel extends BroadcastReceiver
                                     case LauncherSettings.Favorites.CONTAINER_DESKTOP:
                                     case LauncherSettings.Favorites.CONTAINER_HOTSEAT:
                                         sBgWorkspaceItems.add(info);
+                                        for(int in = 0 ;in < LauncherAppState.getInstance().favorites.size(); in++) {
+                                            if(LauncherAppState.getInstance().favorites.get(in).getClassName().equals(info.intent.getComponent().getPackageName())) {
+                                                LauncherAppState.getInstance().favorites.remove(in);
+                                                break;
+                                            }
+                                        }
                                         break;
                                     default:
                                         // Item is in a user folder

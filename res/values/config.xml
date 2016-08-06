@@ -26,7 +26,7 @@
 
 <!-- AllApps/Customize/AppsCustomize -->
     <!-- The alpha of the AppsCustomize bg in spring loaded mode -->
-    <integer name="config_workspaceScrimAlpha">55</integer>
+    <integer name="config_workspaceScrimAlpha">0</integer>
     <integer name="config_workspaceUnshrinkTime">300</integer>
     <integer name="config_overviewTransitionTime">250</integer>
 
@@ -43,7 +43,7 @@
     <integer name="config_appsCustomizeFadeOutTime">200</integer>
     <integer name="config_appsCustomizeWorkspaceShrinkTime">300</integer>
 
-    <integer name="config_appsCustomizeConcealTime">250</integer>
+    <integer name="config_appsCustomizeConcealTime">20</integer>
     <integer name="config_appsCustomizeItemsAlphaStagger">60</integer>
 
     <!-- This constant stores the ratio of the all apps button drawable which

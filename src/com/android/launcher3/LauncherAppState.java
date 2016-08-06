@@ -63,6 +63,8 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
 
     private DynamicGrid mDynamicGrid;
 
+    public static ArrayList<Favorite> favorites;
+
     public static LauncherAppState getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new LauncherAppState();
@@ -125,6 +127,8 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
         ContentResolver resolver = sContext.getContentResolver();
         resolver.registerContentObserver(LauncherSettings.Favorites.CONTENT_URI, true,
                 mFavoritesObserver);
+
+        favorites = new ArrayList<Favorite>();
     }
 
     public void recreateWidgetPreviewDb() {
